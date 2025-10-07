@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+/* First lets set a background */
+.bg{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-filter: blur(3px); /* Safari 6.0 - 9.0 */
+  filter: blur(5px);
+  background: url('img/scary_bg.jpg');
+  background-position: center;
+  background-origin: content-box;
+  background-size: cover;
+  background-attachment: fixed;
+  z-index: -2;
+}
+
+/* Now the same background, but with brightness filters*/
+.lightning{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-filter: blur(3px); /* Safari 6.0 - 9.0 */
+  background: url('img/scary_bg.jpg');
+  background-position: center;
+  background-origin: content-box;
+  background-size: cover;
+  background-attachment: fixed;
+  filter: brightness(3) blur(5px);
+  -o-filter: brightness(3);
+  -moz-filter: brightness(3);
+  z-index: -1;
+}
+
+/*Now just a opacity animation*/
+.FlashIn{
+-webkit-animation: flash ease-out 4s infinite;
+animation: flash ease-out 4s infinite;
+-webkit-animation-delay: 0s;
+        animation-delay: 0s;
+}
+
+@-webkit-keyframes flash {
+	from { opacity: 0; } 
+  92% { opacity: 0; }
+	93% { opacity: 0.6; }
+  94% { opacity: 0.2; }
+  96% { opacity: 0.9; } 
+	to { opacity: 0; }
+}
+
+@keyframes flash {
+	from { opacity: 0; } 
+    92% { opacity: 0; }
+	93% { opacity: 0.6; }
+    94% { opacity: 0.2; }
+    96% { opacity: 1; } 
+	to { opacity: 0; }
+}
+/*End! is that simple! */
+
+/*Now just some stupid logo to get some look and feel */
+
+.empty{
+  background: transparent;
+  height: 200px;
+}
+.btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button{
+  position: center;
+  alignment: center;
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: white;
+  width: 30%;
+  height: 50%;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin-left: 30px;
+}
+b{
+  font-family: 'Special Elite', cursive;
+  color: #f5f5f5;
+  text-align: center;
+  animation: animate
+  8s linear infinite;
+
+}
+
+@keyframes animate {
+  0% {
+    opacity: 0.9;
+  }
+
+  25%{
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  75% {
+    opacity: 0;
+  }
+
+  85% {
+    opacity: 0;
+  }
+
+  95% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 0.9;
+  }
+}
+button:hover{
+  background-color: #860f2d;
+  border: 2px solid #860f2d; /* Green */
+  color: #fff;
+  box-shadow: 0px 4px 8px 1px #000;
+  transition: all .8s ease;
+}
+
+button:after{
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 0px;
+  height: 0px;
+  background: #0000ff;
+  transform-origin: left bottom;
+  transition-duration: 0.3s;
+  z-index: -1;
+}
+
+
+#title{
+  font-family: 'Special Elite', cursive;
+  padding-top: 50px;
+  text-align: center;
+  z-index:1000;
+  width: 100%;
+  font-size: 6rem;
+  color: rgb(86, 2, 2);
+  position: center;
+  font-weight: 900;
+}
+#title span{ font-weight: 100;}
+
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web:200,900|Lato:100,300,900);
+
+@media screen and (max-width: 630px){
+  #title{
+    font-size: 3rem;
+    margin-left: -9rem;
+    margin-top: -1rem;
+  }
+}
