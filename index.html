@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title> The Starry Night | Home </title>
+          <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+        <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body onload="music()">
+
+<!-- partial:index.partial.html -->
+<!-- two layers of Image-->
+
+<div class="bg"></div>
+<div class="lightning FlashIn"></div>
+
+<div id = "title">
+    <h1>
+        H <b>ot</b> el <b>de</b> l <b>a</b> Hol<b>ori</b>e
+    </h1>
+</div>
+
+<div class="empty"></div>
+<div class="btn">
+
+<button class="btn" onclick="location.href = 'Stage_1/index.html'"> Play Now </button>
+<button class="btn" onclick="location.href = 'stages.html' "> Select Stages </button>
+
+</div>
+
+<audio src="Stage_1/snd/calm.mp3" id = "bg"></audio>
+
+<!-- partial -->
+
+</body>
+
+<script>
+
+    const music = () =>{
+        let music = document.getElementById("bg");
+        music.volume = 0.5;
+        music.play();
+    }
+
+</script>
+
+</html>

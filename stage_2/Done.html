@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title> Hotel de la Holorie | gamedone</title>
+</head>
+
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+  }
+
+  .win{
+    background-size:100% 100%;
+    display: block;
+    margin: 5%  15%;
+    text-align: center;
+    background: white;
+    border-radius: 35px;
+  }
+
+  .container{
+    display: block;
+    margin: 5%  15%;
+    text-align: center;
+    background: black;
+    border-radius: 25px;
+  }
+
+  .intro {
+    max-width: 640px;
+    font-size: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #6d0b1c;
+    text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.5);
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .container h1{
+    border-radius:3px;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    color: white;
+    align-content:center;
+    margin:20px;
+    padding:10px;
+    font-weight:900;
+    font-size:3em;
+    line-height:1;
+    box-sizing:border-box;
+    height:40px
+  }
+
+  p{
+    color: white;
+    font-size: 15px;
+    font-family: "Montserrat", sans-serif;
+  }
+
+
+  .container table{
+    padding-left: 40%;
+    alignment: left;
+    color: #ffffff;
+  }
+
+  .container table th{
+    alignment: left;
+    color: #ffffff;
+  }
+
+  button{
+    position: center;
+    alignment: center;
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: white;
+    width: 30%;
+    height: 50%;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-left: 30px;
+  }
+
+  button:hover{
+    background-color: #6d0b1c;
+    border: 2px solid #6d0b1c; /* Green */
+    color: #fff;
+    box-shadow: 0px 4px 8px 1px #000;
+    transition: all .8s ease;
+  }
+
+  button:after{
+    content: '';
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 0px;
+    height: 0px;
+    background: #0000ff;
+    transform-origin: left bottom;
+    transition-duration: 0.3s;
+    z-index: -1;
+  }
+
+  .blank{
+    height: 40px;
+    background: transparent;
+    display: block;
+  }
+
+
+
+</style>
+
+
+
+<script src = "index.js" type="module"></script>
+
+<body id = "body" bgcolor = "black" >
+
+
+
+<div class = "container" id = "diedmenu">
+
+  <p class = "intro "> you've reached the end of the line</p>
+  <p class = "obj"> Or have you??? SKELETONS DO HAVE A WAY OF CREEPING OUT YOUR CLOSET YOU KNOW</p>
+
+
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+
+</div>
+
+<div class = "container" id = "Pmenu" style="display: none ;">
+
+  <h1> The Controls </h1>
+  <table>
+    <tr>
+      <th>UpArrow</th>
+      <th>Move Forward</th>
+
+    </tr>
+    <tr>
+      <td>LeftArrow</td>
+      <td>Move Left</td>
+
+    </tr>
+    <tr>
+      <td>RightArrow</td>
+      <td>Move Right</td>
+
+    </tr>
+    <tr>
+      <td>mouse</td>
+      <td>Change Camera Angle</td>
+    </tr>
+    <tr>
+      <td>space bar</td>
+      <td>jump</td>
+    </tr>
+
+  </table>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+
+  <button  id = "resume"> Resume </button>
+
+</div>
+
+<div class="container" id="pause_menu" style="display: none ;">
+  <p class = "intro "> We are watching you , choose wisely ... </p>
+  <br/>
+  <br/>
+  <br/>
+  <button  id = "resume_game"> Resume </button>
+  <button onclick="window.location.reload()"> Restart </button>
+  <button  id = "quit_game"> Quit </button>
+</div>
+
+<div class = "win" id = "win" style="display: none">
+
+  <!--<p class="intro"> Wow you made it , this like almost never happens ... Anyways Nicely Done ??? </p>
+  <p class="blank"></p>
+  <p class = "obj" style="font-size: 25px"> You may have won the match but trust me ... you already lost the war (* Creepy Laugh *) </p>
+  <p class="blank"></p>-->
+  <!--    <button  id = "quit_game_win"> Quit </button>-->
+
+
+
+</div>
+</body>
+
+<script>
+
+</script>
+</html>
