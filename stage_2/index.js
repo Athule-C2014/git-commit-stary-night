@@ -15,6 +15,14 @@ let blockingObjs = [];
 let isPaused = false;
 let zombieMixers = [];
 
+let directionalLight; // make directional light available globally for minimap tweak
+
+// Player baseline height and movement bounds
+const BASE_Y = 8.9;
+const START_X = 905;
+const MIN_X = 905; // can't go back beyond start
+const MAX_X = -480; // end point
+
 const sound = document.getElementById("running");
 const scream = document.getElementById("Scream");
 
@@ -41,29 +49,58 @@ const texture = loader.load([
   './models/zpos.png', './models/zneg.png'
 ]);
 scene.background = texture;
+// If you truly removed fog globally, you can set scene.fog = null; otherwise keep as desired.
+// scene.fog = null;
 scene.fog = new THREE.Fog(0xffffff, 0, 500);
 scene.add(new THREE.HemisphereLight(0xffffff));
 
+// Main camera
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
 camera.position.set(905, 8.9, 90);
 camera.rotation.y = Math.PI / 2;
 
+// ✅ Renderer setup with autoClear disabled
 renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
+renderer.autoClear = false;
 document.body.appendChild(renderer.domElement);
 
+// 🗺️ Mini-map orthographic camera
+const mapSize = 150;
+let mapAspect = window.innerWidth / window.innerHeight;
+const mapCamera = new THREE.OrthographicCamera(
+  -mapSize * mapAspect, mapSize * mapAspect,
+  mapSize, -mapSize,
+  1, 1000
+);
+mapCamera.position.set(camera.position.x, 300, camera.position.z);
+mapCamera.up.set(0, 0, -1);
+mapCamera.lookAt(camera.position.x, 0, camera.position.z);
+
+// Resize handler
 window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
+
+  // main camera
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
+
+  // minimap camera
+  mapAspect = window.innerWidth / window.innerHeight;
+  mapCamera.left = -mapSize * mapAspect;
+  mapCamera.right = mapSize * mapAspect;
+  mapCamera.top = mapSize;
+  mapCamera.bottom = -mapSize;
+  mapCamera.updateProjectionMatrix();
 });
 
-// 💡 Lights
+// 💡 Lights (now assign to directionalLight var)
 (function LightSetup() {
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
-  keyLight.position.set(-100, 0, 100);
-  scene.add(keyLight);
+  directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+  directionalLight.position.set(-100, 0, 100);
+  scene.add(directionalLight);
+
   scene.add(new THREE.AmbientLight(0xffffff, 0.4));
 })();
 
@@ -167,6 +204,12 @@ function togglePause() {
 const meshInMaterial = new THREE.MeshBasicMaterial({ visible: false });
 const meshIn = new THREE.Mesh(new THREE.BoxGeometry(2, 25, 10), meshInMaterial);
 scene.add(meshIn);
+
+const playerMarker = new THREE.Mesh(
+  new THREE.SphereGeometry(2, 8, 8),
+  new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+);
+scene.add(playerMarker);
 
 // 🔥 Build stage (obstacles)
 function buildStage(sceneFaceSet) {
@@ -289,6 +332,18 @@ function generateCollectables() {
   }
 }
 
+// 🧱 End wall
+const endWallGeometry = new THREE.BoxGeometry(5, 200, 400); // wide + tall
+const endWallMaterial = new THREE.MeshStandardMaterial({ color: 0x111111 });
+const endWall = new THREE.Mesh(endWallGeometry, endWallMaterial);
+endWall.position.set(MAX_X - 3, 50, 80); // place just before the win trigger
+endWall.receiveShadow = true;
+endWallMaterial.visible = false;
+scene.add(endWall);
+blockingObjs.push(endWall); // also prevents walking through it
+
+
+
 // 🚀 Init
 const sceneFaceSet = new Scenediscriptor().Scene1;
 buildStage(sceneFaceSet);
@@ -333,7 +388,7 @@ function animate() {
   const c = clock.getDelta();
   zombieMixers.forEach(m => m.update(c));
   requestAnimationFrame(animate);
-  console.log(camera.position);
+  // console.log(camera.position);
 
   if (isPaused) return;
 
@@ -346,12 +401,24 @@ function animate() {
     if (jump) {
       t = ((Date.now() - ti) / 350) * 1.5;
       let yDist = yi + (vi * t) - (0.5 * 9.8 * Math.pow(t, 2));
-      if (yDist <= yi) jump = false;
-      camera.position.y = yDist;
+
+      if (yDist <= BASE_Y) {
+        jump = false;
+        camera.position.y = BASE_Y; // restore camera to base height
+      } else {
+        camera.position.y = yDist;
+      }
+    } else {
+      camera.position.y = BASE_Y; // keep fixed height when not jumping
     }
 
     pControl.moveRight(xDis);
     pControl.moveForward(zDis);
+
+    // Prevent going backward
+    if (camera.position.x > START_X) {
+      camera.position.x = START_X;
+    }
     posI = posF;
   }
 
@@ -373,11 +440,71 @@ function animate() {
 
   // 🏁 Win condition
   if (camera.position.x <= -473) {
-    // alert(`You reached the end! Final score: ${score}`);
-    location.href = "Done.html";
+    // 🕳️ Fade to white before ending
+    const fadeDiv = document.createElement("div");
+    fadeDiv.style.position = "fixed";
+    fadeDiv.style.top = 0;
+    fadeDiv.style.left = 0;
+    fadeDiv.style.width = "100%";
+    fadeDiv.style.height = "100%";
+    fadeDiv.style.background = "white";
+    fadeDiv.style.opacity = 0;
+    fadeDiv.style.transition = "opacity 1s ease";
+    document.body.appendChild(fadeDiv);
+
+    setTimeout(() => { fadeDiv.style.opacity = 1; }, 100); // fade in
+    setTimeout(() => { location.href = "Done.html"; }, 1500); // redirect after fade
   }
 
+  // ---------- Render sequence ----------
+  const fullW = window.innerWidth;
+  const fullH = window.innerHeight;
+
+  // Clear once
+  renderer.clear();
+
+  // 1) Main full-screen render
+  renderer.setViewport(0, 0, fullW, fullH);
+  renderer.setScissorTest(false);
   renderer.render(scene, camera);
+
+  // 2) Mini-map update and render
+  playerMarker.position.copy(camera.position);
+  mapCamera.position.set(camera.position.x, 300, camera.position.z);
+  mapCamera.lookAt(camera.position.x, 0, camera.position.z);
+
+  const mapWidth = Math.floor(fullW / 4);
+  const mapHeight = Math.floor(fullH / 4);
+  const margin = 20;
+  const mapX = fullW - mapWidth - margin;
+  const mapY = margin;
+
+  // 🎥 Mini-map render (no fog, bright view) - make this robust:
+  const oldFog = scene.fog;
+  scene.fog = null; // temporarily disable fog
+
+  // Save old directional light intensity if directionalLight exists
+  const oldDirIntensity = directionalLight ? directionalLight.intensity : null;
+  if (directionalLight) directionalLight.intensity = 1.5;
+
+  // Save renderer clear color & alpha and set a local clear for mini-map
+  const oldClearColor = renderer.getClearColor().clone();
+  const oldClearAlpha = renderer.getClearAlpha();
+  renderer.setClearColor(0x000000, 1); // minimap background
+
+  renderer.clearDepth();
+  renderer.setScissorTest(true);
+  renderer.setScissor(mapX, mapY, mapWidth, mapHeight);
+  renderer.setViewport(mapX, mapY, mapWidth, mapHeight);
+  renderer.render(scene, mapCamera);
+  renderer.setScissorTest(false);
+
+  // restore fog + light + clear color
+  scene.fog = oldFog;
+  if (directionalLight && oldDirIntensity !== null) directionalLight.intensity = oldDirIntensity;
+  renderer.setClearColor(oldClearColor);
+  renderer.setClearAlpha(oldClearAlpha);
+  // ---------- End render sequence ----------
 }
 
 animate();

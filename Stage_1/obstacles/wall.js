@@ -19,7 +19,7 @@ class wall{
                     new THREE.BoxGeometry(3, 8, 8),
                     new THREE.MeshPhongMaterial({
                         shininess:0,
-                        color:0x654321,
+                         color: 0x2222222,
                         map: crateTexture,
                         bumpMap: crateBumpMap,
                         normalMap: crateNormalMap
